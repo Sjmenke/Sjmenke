@@ -1,0 +1,86 @@
+# Regime Classification Rules for TQQQ Market Regime Detection Framework
+
+# BULL REGIME - Strong uptrend with low volatility
+# Recommended exposure: 100% TQQQ
+bull:
+  conditions:
+    - "QQQ_price > SMA_50"           # Price above 50-day MA
+    - "SMA_50 > SMA_200"              # 50-day MA above 200-day MA (golden cross)
+    - "VIX < 20"                      # Low to moderate volatility
+    - "RSI > 40"                      # Not oversold
+    - "RSI < 75"                      # Not extremely overbought
+    - "MACD > 0"                      # Positive MACD histogram
+  exposure: 1.0                       # 100% TQQQ exposure
+  strategy: "all_must_pass"           # All conditions must be true
+  description: "Strong bullish trend with favorable conditions for leveraged exposure"
+
+# BEAR REGIME - Downtrend or high volatility
+# Recommended exposure: 0% TQQQ (cash)
+bear:
+  conditions:
+    - "QQQ_price < SMA_200"           # Price below 200-day MA
+    - "VIX > 25"                      # Elevated volatility
+    - "RSI < 50"                      # Weak momentum
+  exposure: 0.0                       # 0% TQQQ exposure (cash)
+  strategy: "majority"                # At least 2 of 3 conditions must be true
+  description: "Bearish trend or high volatility - stay in cash"
+
+# Alternative BEAR configuration (more aggressive)
+# Uncomment to use stricter bear conditions
+# bear:
+#   conditions:
+#     - "SMA_50 < SMA_200"            # Death cross
+#     - "VIX > 30"                    # High volatility
+#     - "QQQ_price < SMA_50"          # Price below 50-day MA
+#     - "RSI < 40"                    # Oversold or weak
+#   exposure: 0.0
+#   strategy: "majority"              # At least 3 of 4 conditions
+
+# CHOPPY REGIME - Mixed signals or transitional period
+# Recommended exposure: 0-50% TQQQ
+choppy:
+  conditions:
+    - "default"                       # Default regime if not bull or bear
+  exposure: 0.25                      # 25% TQQQ exposure (reduced position)
+  strategy: "all_must_pass"
+  description: "Mixed signals - use reduced exposure"
+
+# ADDITIONAL REGIME CONFIGURATIONS (optional)
+# You can define additional nuanced regimes for more granular control
+
+# Example: Strong Bull (use higher exposure or options strategies)
+# strong_bull:
+#   conditions:
+#     - "QQQ_price > SMA_50"
+#     - "SMA_50 > SMA_200"
+#     - "VIX < 15"                    # Very low volatility
+#     - "RSI > 50"
+#     - "RSI < 70"
+#     - "ADX > 25"                    # Strong trend
+#     - "MACD > 0"
+#   exposure: 1.0
+#   strategy: "all_must_pass"
+
+# Example: Cautious Bull (slightly elevated volatility)
+# cautious_bull:
+#   conditions:
+#     - "QQQ_price > SMA_50"
+#     - "SMA_50 > SMA_200"
+#     - "VIX >= 20"
+#     - "VIX < 25"
+#     - "RSI > 45"
+#   exposure: 0.5                     # 50% exposure
+#   strategy: "all_must_pass"
+
+# NOTES:
+# 1. Conditions are evaluated top-to-bottom
+# 2. Variable names should match indicator names or ticker_price format
+# 3. Supported operators: >, <, >=, <=, ==, !=
+# 4. Use AND/OR for compound conditions (e.g., "RSI > 40 AND RSI < 70")
+# 5. Strategy options:
+#    - "all_must_pass": All conditions must be true
+#    - "majority": At least 50% of conditions must be true
+#    - "weighted_score": Use weighted sum (requires weights list)
+# 6. Exposure should be between 0.0 and 1.0 (0% to 100%)
+# 7. The classifier evaluates regimes in priority order: Bear > Bull > Choppy
+#    This ensures a conservative approach (avoid losses before seeking gains)

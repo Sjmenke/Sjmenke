@@ -1,0 +1,32 @@
+# TQQQ Market Regime Detection Framework - Python Dependencies
+
+# Data fetching
+yfinance>=0.2.32              # Yahoo Finance data (market data)
+fredapi>=0.5.1                # FRED API (economic data) - optional but recommended
+
+# Data analysis
+pandas>=2.1.0                 # Data manipulation
+numpy>=1.24.0                 # Numerical computing
+
+# Visualization
+matplotlib>=3.8.0             # Charting
+rich>=13.6.0                  # Terminal formatting and dashboard
+
+# Configuration
+PyYAML>=6.0.1                 # YAML configuration files
+
+# Database (built-in with Python)
+# sqlite3 - comes with Python standard library
+
+# Optional dependencies for enhanced functionality
+# seaborn>=0.12.0             # Enhanced chart styling
+# plotly>=5.17.0              # Interactive charts
+# pandas-ta>=0.3.14b0         # Additional technical indicators
+
+# Development dependencies (optional)
+# pytest>=7.4.0               # Testing
+# black>=23.9.0               # Code formatting
+# pylint>=3.0.0               # Linting
+# mypy>=1.5.0                 # Type checking
+
+# Minimum Python version: 3.8+

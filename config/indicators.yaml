@@ -1,0 +1,85 @@
+# Indicator Configuration for TQQQ Market Regime Detection Framework
+# All period values are in trading days unless otherwise specified
+
+# Trend Indicators
+trend:
+  # Simple Moving Averages
+  sma_short: 50          # 50-day SMA (short-term trend)
+  sma_long: 200          # 200-day SMA (long-term trend)
+
+  # Average Directional Index (trend strength)
+  adx_period: 14
+  adx_strong_threshold: 25    # ADX > 25 indicates strong trend
+  adx_weak_threshold: 20      # ADX < 20 indicates weak/no trend
+
+# Volatility Indicators
+volatility:
+  # VIX (CBOE Volatility Index)
+  vix_ma_period: 20           # Moving average of VIX
+  vix_low_threshold: 15       # Low volatility threshold
+  vix_medium_threshold: 20    # Medium volatility threshold
+  vix_high_threshold: 25      # High volatility threshold
+  vix_extreme_threshold: 30   # Extreme volatility threshold
+
+  # Average True Range
+  atr_period: 14
+
+  # Bollinger Bands
+  bb_period: 20
+  bb_std_dev: 2               # Standard deviations for bands
+
+  # Historical Volatility
+  hv_period: 20               # Period for historical volatility calculation
+  hv_annualization_factor: 252  # Trading days per year
+
+# Momentum Indicators
+momentum:
+  # Relative Strength Index
+  rsi_period: 14
+  rsi_oversold: 30            # RSI < 30 considered oversold
+  rsi_overbought: 70          # RSI > 70 considered overbought
+  rsi_neutral_low: 40         # Lower bound of neutral zone
+  rsi_neutral_high: 60        # Upper bound of neutral zone
+
+  # MACD (Moving Average Convergence Divergence)
+  macd_fast: 12               # Fast EMA period
+  macd_slow: 26               # Slow EMA period
+  macd_signal: 9              # Signal line period
+
+  # Rate of Change
+  roc_period: 63              # 3-month ROC (approximately 63 trading days)
+  roc_positive_threshold: 0   # ROC > 0 indicates positive momentum
+
+  # Stochastic Oscillator
+  stoch_k_period: 14
+  stoch_d_period: 3
+  stoch_oversold: 20
+  stoch_overbought: 80
+
+# Market Breadth Indicators (optional - requires additional data)
+breadth:
+  enable_percent_above_ma: false  # Set to true if you have component stock data
+  percent_above_ma_period: 200
+  percent_above_threshold: 50      # Bullish if >50% stocks above MA
+
+# Data Update Settings
+data:
+  # Number of days to look back when updating data (to catch corrections)
+  update_buffer_days: 5
+
+  # Minimum number of data points required for indicator calculation
+  min_data_points: 200
+
+  # Rate limiting (seconds between API calls)
+  api_rate_limit: 0.5
+
+# Calculation Settings
+calculation:
+  # How to handle missing data
+  fill_method: 'forward'      # Options: 'forward', 'backward', 'none'
+
+  # Maximum number of consecutive NaN values to forward fill
+  max_fill_periods: 3
+
+  # Minimum confidence score to store regime classification
+  min_confidence: 0.3
