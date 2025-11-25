@@ -4,9 +4,9 @@
 # Recommended exposure: 100% TQQQ
 bull:
   conditions:
-    - "QQQ_price > SMA_50"           # Price above 50-day MA
-    - "SMA_50 > SMA_200"              # 50-day MA above 200-day MA (golden cross)
-    - "VIX < 20"                      # Low to moderate volatility
+    - "QQQ_price > SMA_SHORT"         # Price above 50-day MA
+    - "SMA_SHORT > SMA_LONG"          # 50-day MA above 200-day MA (golden cross)
+    - "VIX_LEVEL < 20"                # Low to moderate volatility
     - "RSI > 40"                      # Not oversold
     - "RSI < 75"                      # Not extremely overbought
     - "MACD > 0"                      # Positive MACD histogram
@@ -18,8 +18,8 @@ bull:
 # Recommended exposure: 0% TQQQ (cash)
 bear:
   conditions:
-    - "QQQ_price < SMA_200"           # Price below 200-day MA
-    - "VIX > 25"                      # Elevated volatility
+    - "QQQ_price < SMA_LONG"          # Price below 200-day MA
+    - "VIX_LEVEL > 25"                # Elevated volatility
     - "RSI < 50"                      # Weak momentum
   exposure: 0.0                       # 0% TQQQ exposure (cash)
   strategy: "majority"                # At least 2 of 3 conditions must be true
