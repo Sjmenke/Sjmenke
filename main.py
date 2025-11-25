@@ -221,18 +221,30 @@ class MarketRegimeApp:
 
                 # Store results
                 if result is not None:
-                    for idx, value in result.items():
-                        if hasattr(value, '__iter__') and not isinstance(value, str):
-                            # Multi-column indicator (like Bollinger Bands)
-                            # Store the first column or a summary value
-                            value = value[0] if len(value) > 0 else None
+                    # Check if result is a DataFrame or Series
+                    import pandas as pd
 
-                        if value is not None:
-                            self.db.insert_indicators(
-                                ticker,
-                                idx.date() if hasattr(idx, 'date') else idx,
-                                {ind_name: float(value)}
-                            )
+                    if isinstance(result, pd.DataFrame):
+                        # For DataFrames (like MACD, Bollinger Bands), store primary column
+                        # Use first column as the main value
+                        primary_column = result.columns[0]
+                        for idx, row in result.iterrows():
+                            value = row[primary_column]
+                            if pd.notna(value):
+                                self.db.insert_indicators(
+                                    ticker,
+                                    idx.date() if hasattr(idx, 'date') else idx,
+                                    {ind_name: float(value)}
+                                )
+                    elif isinstance(result, pd.Series):
+                        # For Series (most indicators)
+                        for idx, value in result.items():
+                            if pd.notna(value):
+                                self.db.insert_indicators(
+                                    ticker,
+                                    idx.date() if hasattr(idx, 'date') else idx,
+                                    {ind_name: float(value)}
+                                )
 
                     logger.info(f"✓ {ind_name}: Calculated")
 
