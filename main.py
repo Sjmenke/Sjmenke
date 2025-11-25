@@ -33,6 +33,10 @@ from visualization.charts import RegimeChartGenerator
 from visualization.dashboard import RegimeDashboard
 from events.economic_calendar import EconomicCalendar
 
+# Create necessary directories before logging setup
+Path("logs").mkdir(exist_ok=True)
+Path("outputs").mkdir(exist_ok=True)
+
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
@@ -62,10 +66,6 @@ class MarketRegimeApp:
         self.classifier = RegimeClassifier()
         self.dashboard = RegimeDashboard()
         self.chart_generator = RegimeChartGenerator()
-
-        # Create logs and outputs directories
-        Path("logs").mkdir(exist_ok=True)
-        Path("outputs").mkdir(exist_ok=True)
 
         # Initialize economic calendar if configured
         fred_key = self.config.get('data_sources', {}).get('fred_api', {}).get('api_key')
