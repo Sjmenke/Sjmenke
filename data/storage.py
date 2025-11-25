@@ -72,8 +72,13 @@ class DatabaseStorage:
             rows_inserted = 0
             for idx, row in df.iterrows():
                 try:
-                    # Convert index to date if it's a datetime
-                    row_date = idx if isinstance(idx, date) else idx.date()
+                    # Convert index to date string for SQLite
+                    if isinstance(idx, date):
+                        row_date = idx.isoformat()
+                    elif hasattr(idx, 'date'):
+                        row_date = idx.date().isoformat()
+                    else:
+                        row_date = str(idx)[:10]  # Take first 10 chars (YYYY-MM-DD)
 
                     self.conn.execute("""
                         INSERT OR REPLACE INTO market_data
