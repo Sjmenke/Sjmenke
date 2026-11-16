@@ -46,3 +46,9 @@ lights are green" was worse than buying in thirds over 6 weeks (12-month median 
 * Taxes cost about 6 points of CAGR in a taxable account; still about 8 points a year ahead of QQQ.
 * Lower-risk variant: 50/50 TQQQ/QQQ (or 2x) with the same signals: ~20-21% CAGR / -47 to -61% drawdown.
 * Known gap: scalein.py plans still trade at the signal close (same for every plan, so the comparison is fair).
+
+## Round 5: VIX and total returns
+* `vix.py`: VIX overlays (VIX cap to QQQ or cash, graded leverage, VIX>VIX3M, VIX entry filter) all
+  lowered returns and none fixed the 2000-02 drawdown (VIX stayed ~20-35 while the Nasdaq collapsed).
+  The Nasdaq's own realized volatility (the existing vol cap) is the better gauge. VIX is context only.
+* `totals.py` / `totals.png`: what $10k became from 5 start dates, plus a drawdown-over-time chart.
