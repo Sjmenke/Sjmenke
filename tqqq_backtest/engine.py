@@ -67,7 +67,8 @@ def states(df, entry=0.04, exit_=0.03, ndx_exit=None, ndx_reentry=None,
     return W
 
 
-def sim(df, W, lag=1, cost=0.0005):
+def sim(df, W, lag=2, cost=0.0005):
+    """lag=2: signal at close t, filled at close t+1 (realistic). lag=1 = same-close fill (needs MOC order on an estimated signal)."""
     Wd = pd.DataFrame(W, index=df.index).shift(lag)
     Wd.iloc[:lag] = [0, 0, 1]
     R = df[["tqqq_ret", "qqq_ret", "cash_ret"]].values

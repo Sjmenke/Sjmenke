@@ -18,7 +18,7 @@ def go(start):
         if k == "QQQ buy&hold": r = d.qqq_ret
         elif k == "TQQQ buy&hold": r = d.tqqq_ret
         else: r, W = run(d, **v)
-        rows.append(stats(r, k))
+        rows.append(stats(r, k, rf=d.cash_ret))
     t = pd.DataFrame(rows).set_index("name")
     for c in ["CAGR","MaxDD","Vol"]: t[c] = (t[c]*100).round(1)
     t["Final"] = t["Final"].round(0); t[["Sharpe","Calmar"]] = t[["Sharpe","Calmar"]].round(2)

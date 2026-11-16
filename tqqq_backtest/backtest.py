@@ -42,7 +42,7 @@ def load():
 
 
 def run(df, entry=0.04, exit_=0.03, mode="cash", bodyguard=False,
-        bg_delever=0.30, bg_sell=0.40, dca_months=12, lag=1, cost=0.0005, start_in=False):
+        bg_delever=0.30, bg_sell=0.40, dca_months=12, lag=2, cost=0.0005, start_in=False):
     """Dollar-holdings simulation. Signal at close t, trade at close t+lag.
 
     mode: 'cash' -> out of TQQQ hold T-bills
@@ -104,12 +104,13 @@ def run(df, entry=0.04, exit_=0.03, mode="cash", bodyguard=False,
     return pd.Series(out, index=df.index), pd.DataFrame(W, index=df.index, columns=["tqqq","qqq","cash"])
 
 
-def stats(r, name=""):
+def stats(r, name="", rf=None):
     eq = (1 + r).cumprod()
     yrs = len(r) / TD
     cagr = eq.iloc[-1] ** (1 / yrs) - 1
     dd = (eq / eq.cummax() - 1).min()
     vol = r.std() * np.sqrt(TD)
-    sharpe = (r.mean() * TD) / vol if vol else np.nan
+    ex = r - (rf.reindex(r.index).fillna(0) if rf is not None else 0)
+    sharpe = (ex.mean() * TD) / vol if vol else np.nan
     return dict(name=name, CAGR=cagr, MaxDD=dd, Vol=vol, Sharpe=sharpe,
                 Final=eq.iloc[-1], Calmar=cagr / -dd if dd else np.nan)

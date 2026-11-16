@@ -34,3 +34,15 @@ Requiring extra "green lights" (MACD, Nasdaq above its 200SMA, low volatility) b
 did **not** improve results: MACD costs 0.2-1.6 points of CAGR a year, and "all-in when all
 lights are green" was worse than buying in thirds over 6 weeks (12-month median 34% vs 39%,
 10th percentile -24% vs -14%). Rule lights = S&P vs 200SMA and Nasdaq volatility; the rest are context.
+
+## Round 4: peer review (two review agents; scripts in review/)
+* **Fixed a timing error:** the engine was filling at the same close that created the signal. The default
+  is now a next-day close fill (`lag=2`). The tuned rule from 1986 goes from 27.9% / -64% to **23.8% / -81%**.
+  Almost all of the gap is Black Monday 1987.
+* Fixed look-ahead in now.py; Sharpe now subtracts T-bills.
+* Walk-forward: picking settings from past data only would not have chosen the vol cap before 2000
+  (-87% max drawdown). The vol cap never acted after 2000. Keep it as cheap insurance, but don't count on it.
+* Bootstrap (resampled histories): median 22% CAGR, median max drawdown -73%, 25% chance of worse than -80%.
+* Taxes cost about 6 points of CAGR in a taxable account; still about 8 points a year ahead of QQQ.
+* Lower-risk variant: 50/50 TQQQ/QQQ (or 2x) with the same signals: ~20-21% CAGR / -47 to -61% drawdown.
+* Known gap: scalein.py plans still trade at the signal close (same for every plan, so the comparison is fair).

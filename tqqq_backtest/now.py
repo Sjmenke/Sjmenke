@@ -17,8 +17,8 @@ for t in idx[::3]:
     i = d.index.get_loc(t)
     if i+504 >= len(d): continue
     seg = d.iloc[i:i+505]
-    a,_ = run(seg, start_in=True, lag=0)   # buy now, then follow strategy
-    b,_ = run(seg, start_in=False, lag=0)  # wait for +4% signal
+    a,_ = run(seg, start_in=True, lag=2)   # buy now, then follow strategy
+    b,_ = run(seg, start_in=False, lag=2)  # wait for +4% signal
     row={"date":t}
     for k,h in H.items():
         row["now_"+k]=(1+a.iloc[1:h+1]).prod()-1
