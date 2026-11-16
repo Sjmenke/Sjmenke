@@ -14,12 +14,21 @@ def add_features(df):
     df = df.copy()
     nr = df["ndx"].pct_change()
     df["ndx_vol20"] = nr.rolling(20).std() * np.sqrt(TD)
+    for k in ("spx", "ndx"):
+        m = df[k].ewm(span=12, adjust=False).mean() - df[k].ewm(span=26, adjust=False).mean()
+        df[f"{k}_macd"] = m
+        df[f"{k}_macd_sig"] = m.ewm(span=9, adjust=False).mean()
+    # weekly MACD on S&P (Friday closes, forward-filled to days; uses only completed weeks)
+    wk = df["spx"].resample("W-FRI").last()
+    wm = wk.ewm(span=12, adjust=False).mean() - wk.ewm(span=26, adjust=False).mean()
+    wh = (wm - wm.ewm(span=9, adjust=False).mean())
+    df["spx_wmacd_hist"] = wh.reindex(df.index, method="ffill").shift(1)
     return df.dropna(subset=["ndx_vol20"])
 
 
 def states(df, entry=0.04, exit_=0.03, ndx_exit=None, ndx_reentry=None,
            bodyguard=None, sticky_bg=False, vol_cap=None, vol_hys=0.05,
-           confirm=1, out=C, start_in=False):
+           confirm=1, out=C, start_in=False, entry_gate=None):
     """Return (n,3) target weights.
 
     ndx_exit:    also exit if NDX falls this far below its own 200SMA (e.g. 0.05)
@@ -40,7 +49,7 @@ def states(df, entry=0.04, exit_=0.03, ndx_exit=None, ndx_reentry=None,
             if ex:
                 in_lev = False; tripped = False
         else:
-            ok = above >= confirm and (ndx_reentry is None or nd[t] > ndx_reentry)
+            ok = above >= confirm and (ndx_reentry is None or nd[t] > ndx_reentry) and (entry_gate is None or entry_gate[t])
             if ok:
                 in_lev = True
         if vol_cap is not None:

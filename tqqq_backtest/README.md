@@ -27,3 +27,10 @@ Data: Yahoo Finance (^GSPC, ^NDX, QQQ, TQQQ adjusted closes) and FRED 3M T-bill 
   (the sticky version fixes 2000 but costs the 1990s).
 * **Scale-in:** thirds over 6 weeks gave up ~3 points of median 12-month return vs
   all-in, but cut the 10th-percentile outcome from -24% to -14%.
+| `dashboard.py` | `dashboard.png`: entry/exit arrows + traffic-light board (run daily) |
+
+## Round 3: indicator lights
+Requiring extra "green lights" (MACD, Nasdaq above its 200SMA, low volatility) before entering
+did **not** improve results: MACD costs 0.2-1.6 points of CAGR a year, and "all-in when all
+lights are green" was worse than buying in thirds over 6 weeks (12-month median 34% vs 39%,
+10th percentile -24% vs -14%). Rule lights = S&P vs 200SMA and Nasdaq volatility; the rest are context.

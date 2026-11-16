@@ -22,6 +22,7 @@ def plan_sim(seg, plan, strat_W):
     plan: dict(tranches=[(trigger, frac_of_target)], park='cash'|'qqq')
       trigger: ('now',) | ('day', k) | ('ndx_above', x) | ('spx_above', x) | ('vol_below', v, after_day)
     """
+    lt = seg.lights.values
     sd = seg.spx_dev.values; nd = seg.ndx_dev.values; v = seg.ndx_vol20.values
     R = seg[["tqqq_ret", "qqq_ret", "cash_ret"]].values
     n = min(H + 1, len(seg))
@@ -46,7 +47,8 @@ def plan_sim(seg, plan, strat_W):
                     k = trig[0]
                     if (k == "now" or (k == "day" and t >= trig[1]) or
                             (k == "ndx_above" and nd[t] > trig[1]) or
-                            (k == "vol_below" and t >= trig[2] and v[t] < trig[1])):
+                            (k == "vol_below" and t >= trig[2] and v[t] < trig[1]) or
+                            (k == "lights" and lt[t])):
                         fired.append(tr)
                 for tr in fired:
                     pending.remove(tr)
@@ -73,6 +75,8 @@ PLANS = {
     "6 QQQ now, TQQQ at +4%":          dict(tranches=[(("spx_above", 9), 0)], park="qqq"),
     "7 1/3 TQQQ + 2/3 QQQ, all at +4%": dict(tranches=[(("now",), 1/3), (("spx_above", 9), 0)], park="qqq"),
     "8 1/3 now, rest when vol<30% (>=2wk)": dict(tranches=[(("now",), 1/3), (("vol_below", 0.30, 10), 0.5), (("vol_below", 0.30, 20), 1.0)]),
+    "9 All-in when all lights green":  dict(tranches=[(("lights",), 1.0)]),
+    "10 1/3 now, rest when lights green": dict(tranches=[(("now",), 1/3), (("lights",), 1.0)]),
 }
 # note: ("spx_above", 9) never fires on its own; the +4% graduation handles it.
 
@@ -82,6 +86,8 @@ def main():
     tq = (1 + df.tqqq_ret).cumprod()
     df["tq_dev"] = tq / tq.rolling(200).mean() - 1
     df = df.dropna(subset=["tq_dev"]).loc["1987":]
+    # lights: Nasdaq above its 200SMA, Nasdaq vol < 35%, S&P daily MACD above signal
+    df["lights"] = (df.ndx_dev > 0) & (df.ndx_vol20 < 0.35) & (df.spx_macd > df.spx_macd_sig)
     cond = (df.spx_dev.between(-0.03, 0.04) & df.ndx_dev.between(-0.06, 0.01)
             & df.tq_dev.between(-0.25, -0.10))
     idx = [i for i, t in enumerate(df.index) if cond.iloc[i] and i + H < len(df)][::2]
